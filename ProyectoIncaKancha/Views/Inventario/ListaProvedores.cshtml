@@ -1,0 +1,93 @@
+﻿@model IEnumerable<ProyectoIncaKancha.Models.Proveedor>
+
+@{
+    ViewBag.Title = "ListaProveedores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
+
+
+<h2>Lista de Proveedores</h2>
+
+<p>
+    @Html.ActionLink("Crear", "CrearProveedor")
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreProveedor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreProveedor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.direccion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "EditarProveedor", new { id = item.IdProveedor }, new { @class = "btn btn-info btn-sm" }),
+                    @using (Html.BeginForm("EliminarProveedores", "Inventario", new { id = item.IdProveedor }, FormMethod.Post, new { id = "eliminarForm" }))
+                    {
+                        <input type="submit" value="Eliminar" class="btn btn-danger btn-sm eliminarBtn" data-id="@item.IdProveedor" />
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var botonesEliminar = document.querySelectorAll('.eliminarBtn');
+
+        botonesEliminar.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var idProducto = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: '¿Estás seguro de eliminar este producto?',
+                    text: 'Esta acción no se puede deshacer.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Si el usuario hace clic en "Sí, eliminar", redirige a la acción de eliminar
+                        document.getElementById('eliminarForm').action = '@Url.Action("EliminarProveedores", "Inventario")' + '/' + idProducto;
+                        document.getElementById('eliminarForm').submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<ProyectoIncaKancha.Models.Producto>
+@{
+    ViewBag.Title = "ListaProductos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
+
+<h2>Administración de Inventario</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo Producto", "CrearProducto", null, new { @class = "btn btn-primary" })
+</p>
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nombre del Producto</th>
+                <th>Descripción</th>
+                <th>Precio Unitario</th>
+                <th>Stock</th>
+                <th>Categoría</th>
+                <th>Proveedor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.NombreProducto)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PrecioUnitario)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Stock)</td>
+                    <td>@Html.DisplayFor(modelItem => item.categoria.NombreCategoria)</td>
+                    <td>@Html.DisplayFor(modelItem => item.proveedor.NombreProveedor)</td>
+                    <td>
+                        @Html.ActionLink("Editar", "EditarProducto", new { id = item.id }, new { @class = "btn btn-info btn-sm" }) |
+                        @using (Html.BeginForm("EliminarProductos", "Inventario", new { id = item.id }, FormMethod.Post, new { id = "eliminarForm" }))
+                        {
+                            <input type="submit" value="Eliminar" class="btn btn-danger btn-sm eliminarBtn" data-id="@item.id" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<p>Productos Existentes: @Model.Count()</p>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var botonesEliminar = document.querySelectorAll('.eliminarBtn');
+
+        botonesEliminar.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var idProducto = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: '¿Estás seguro de eliminar este producto?',
+                    text: 'Esta acción no se puede deshacer.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Si el usuario hace clic en "Sí, eliminar", redirige a la acción de eliminar
+                        document.getElementById('eliminarForm').action = '@Url.Action("EliminarProductos", "Inventario")' + '/' + idProducto;
+                        document.getElementById('eliminarForm').submit();
+                    }
+                });
+            });
+        });
+    });
+</script>

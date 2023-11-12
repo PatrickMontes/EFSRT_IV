@@ -1,0 +1,113 @@
+﻿@model ProyectoIncaKancha.Models.Producto
+@{
+    ViewBag.Title = "CrearProducto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>CrearProducto</h2>
+
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Producto</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.NombreProducto, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NombreProducto, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NombreProducto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrecioUnitario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PrecioUnitario, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PrecioUnitario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Stock, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Stock, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Stock, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.categoria, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.categoria.IdCategoria, ViewBag.categorias as SelectList, new { @class = "form-select" })
+                @Html.ValidationMessageFor(model => model.categoria, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.proveedor, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.proveedor.IdProveedor, ViewBag.proveedores as SelectList, new { @class = "form-select" })
+                @Html.ValidationMessageFor(model => model.proveedor, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @Html.ActionLink("Nuevo", "CrearProducto", null, new { @class = "btn btn-primary" })
+                <input type="submit" value="Create" class="btn btn-default" id="nuevoBtn"/>
+                @Html.ActionLink("Retornar", "ListaProductos", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @ViewBag.mensaje
+</div>
+
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var nuevoBtn = document.getElementById('nuevoBtn');
+
+        nuevoBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro de crear un nuevo producto?',
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, crear'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si el usuario hace clic en "Sí, crear", envía el formulario
+                    document.forms[0].submit();
+                }
+            });
+        });
+    });
+</script>
+
+
